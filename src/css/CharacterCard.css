@@ -1,0 +1,46 @@
+.character-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #1a1a1a;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    width: 200px;
+}
+
+.character-poster {
+    position: relative;
+    width: 100%;
+}
+
+
+
+.character-info {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.character-info h2 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.character-info p {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .character-info h2 {
+    font-size: 0.9rem;
+  }
+
+  .character-info p {
+    font-size: 0.75rem;
+  }
+}
