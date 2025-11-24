@@ -1,12 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../css/Home.css";
 import CharacterCard from "./CharacterCard";
-import { useState, useEffect } from "react";
 import { getAllCharacters } from "../services/api";
 
 function Home() {
   const [characters, setCharacters] = useState([]);
-  const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("");
   const [loading, setLoading] = useState(true);
@@ -33,7 +31,7 @@ function Home() {
     while (hasMore) {
       const data = await getAllCharacters(page);
 
-      if (data.length === 0) {
+      if (!data || data.length === 0) {
         hasMore = false;
         break;
       }
@@ -46,58 +44,15 @@ function Home() {
       );
 
       allCharacters = [...allCharacters, ...valid];
-      page += 1;
+      page++;
 
-      // 🔥 Optional: stop early to reduce fetch time
+      // Limit to speed up UI
       if (allCharacters.length >= 100) break;
     }
 
-    const unique = Array.from(
-      new Map(allCharacters.map((c) => [c.url, c])).values()
-    );
-<<<<<<< HEAD
-
-    allCharacters = [...allCharacters, ...valid];
-    page += 1;
-
-    // 🔥 Optional: stop early to reduce fetch time
-    if (allCharacters.length >= 80) break;
-  }
-
-  const unique = Array.from(new Map(allCharacters.map((c) => [c.url, c])).values());
-  setCharacters(unique);
-};
-
-=======
+    const unique = Array.from(new Map(allCharacters.map((c) => [c.url, c])).values());
     setCharacters(unique);
   };
->>>>>>> 9b22a0d (Fixed character grid mobile alignment)
-
-  const loadCharacters = async () => {
-    setLoadingMore(true);
-    const newChars = await getAllCharacters(page);
-
-    const filtered = newChars.filter(
-      (char) =>
-        char.name?.trim() !== "" &&
-        char.titles?.length > 0 &&
-        char.culture?.trim() !== ""
-    );
-
-    setCharacters((prev) => {
-      const newList = [...prev, ...filtered];
-      const unique = Array.from(
-        new Map(newList.map((c) => [c.url, c])).values()
-      );
-      return unique;
-    });
-    setPage((prev) => prev + 1);
-    setLoadingMore(false);
-  };
-
-  // useEffect(() => {
-  //   loadCharacters();
-  // }, []);
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + 20);
@@ -111,19 +66,9 @@ function Home() {
     fetchData();
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-  };
-
-<<<<<<< HEAD
-  const filteredCharacters = characters.filter((char) => char.name.toLowerCase().includes(searchQuery.toLowerCase()));
-=======
   const filteredCharacters = characters.filter((char) =>
     char.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  // const filteredCharacters = sortedCharacters()
-  // .filter((char) => char.name.toLowerCase().includes(searchQuery.toLowerCase()));
->>>>>>> 9b22a0d (Fixed character grid mobile alignment)
 
   const sortedCharacters = () => {
     if (!sortOption) return filteredCharacters;
@@ -137,7 +82,7 @@ function Home() {
   return loading ? (
     <h2 style={{ color: "white" }}>Loading...</h2>
   ) : (
-    <div onSubmit={handleSearch} className="home-container">
+    <div onSubmit={(e) => e.preventDefault()} className="home-container">
       <div className="search-form">
         <input
           className="search-input"
@@ -146,23 +91,10 @@ function Home() {
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search GOT Character..."
         />
-        {/* <button type="submit">Search</button> */}
       </div>
 
       <div className="houses">
-        {[
-          "Starks",
-          "Lannisters",
-          "Baratheons",
-          "Targaryens",
-          "Greyjoys",
-          "Tyrells",
-          "Tullys",
-          "Redwyne",
-          "Freys",
-          "Arryns",
-          "Dothrakis",
-        ].map((house) => (
+        {Object.keys(houseMap).map((house) => (
           <div className="house" key={house}>
             <button
               className={sortOption === house ? "active" : ""}
@@ -194,12 +126,6 @@ function Home() {
           <button onClick={handleLoadMore}>Load More</button>
         </div>
       )}
-
-      {/* <div className="load-more-btn">
-        <button disabled={loadingMore} onClick={loadCharacters}>
-          {loadingMore ? "Loading..." : "Load More"}
-        </button>
-      </div> */}
     </div>
   );
 }
