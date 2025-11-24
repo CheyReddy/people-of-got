@@ -48,7 +48,7 @@ const loadAllPages = async () => {
     page += 1;
 
     // 🔥 Optional: stop early to reduce fetch time
-    if (allCharacters.length >= 200) break;
+    if (allCharacters.length >= 80) break;
   }
 
   const unique = Array.from(new Map(allCharacters.map((c) => [c.url, c])).values());
@@ -92,8 +92,6 @@ const loadAllPages = async () => {
   };
 
   const filteredCharacters = characters.filter((char) => char.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  // const filteredCharacters = sortedCharacters()
-  // .filter((char) => char.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const sortedCharacters = () => {
     if (!sortOption) return filteredCharacters;
